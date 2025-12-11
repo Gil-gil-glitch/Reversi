@@ -13,25 +13,45 @@ import java.util.List;
 
 public class MapleBot extends SimpleBot {
 
-    @Override
-    // defines its own strategy for getBotMove
-    public int[] getBotMove(char[][] board, char player) {
-        // get valid moves
-        List<String> validMoves = Reversi.getValidMoves(board, player);
+    private static final int[][] POSITION_WEIGHTS = {
+            {100, -20, 10, 5, 5, 10, -20, 100},
+            {-20, -50, -2, -2, -2, -2, -50, -20},
+            {10, -2, 2, 2, 2, 2, -2, 10},
+            {5, -2, 2, 0, 0, 2, -2, 5},
+            {5, -2, 2, 0, 0, 2, -2, 5},
+            {10, -2, 2, 2, 2, 2, -2, 10},
+            {-20, -50, -2, -2, -2, -2, -50, -20},
+            {100, -20, 10, 5, 5, 10, -20, 100}
+    };
 
+    @Override
+    public int[] getBotMove(char[][] board, char player) {
+        List<String> validMoves = Reversi.getValidMoves(board, player);
         if (validMoves.isEmpty()) {
-            return null; // No valid moves
+            return null;
         }
 
-        // goes for corners: A1, A8, H1, and H8.
+        int bestScore = Integer.MIN_VALUE;
+        String bestMove = validMoves.get(0);
+
         for (String move : validMoves) {
-            if (move.equals("A1") || move.equals("A8") || move.equals("H1") || move.equals("H8")) {
-                return convertMove(move);
+            int[] coords = convertMove(move);
+            char[][] simulated = Reversi.copyBoard(board);
+            Reversi.makeMove(simulated, coords[0], coords[1], player);
+
+            int moveScore = evaluateBoard(simulated, player, coords);
+            if (moveScore > bestScore) {
+                bestScore = moveScore;
+                bestMove = move;
             }
         }
 
-        // if not possible, choose a random piece
-        String move = validMoves.get((int) (Math.random() * validMoves.size()));
-        return convertMove(move);
+        return convertMove(bestMove);
+    }
+
+    private int evaluateBoard(char[][] board, char player, int[] move) {
+        int positional = POSITION_WEIGHTS[move[0]][move[1]];
+        int pieceCount = Reversi.countPieces(board, player);
+        return pieceCount + positional;
     }
 }
