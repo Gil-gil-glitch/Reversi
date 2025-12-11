@@ -54,19 +54,9 @@ $$
 
 The strategic value of each board square is determined by the `POSITION_WEIGHTS` matrix used by MomijiManjuBot:
 
-\[
-\text{POSITION\_WEIGHTS} =
-\begin{pmatrix}
-120 & -20 & 20 & 5 & 5 & 20 & -20 & 120 \\
--20 & -40 & -5 & -5 & -5 & -5 & -40 & -20 \\
-20 & -5 & 15 & 3 & 3 & 15 & -5 & 20 \\
-5 & -5 & 3 & 0 & 0 & 3 & -5 & 5 \\
-5 & -5 & 3 & 0 & 0 & 3 & -5 & 5 \\
-20 & -5 & 15 & 3 & 3 & 15 & -5 & 20 \\
--20 & -40 & -5 & -5 & -5 & -5 & -40 & -20 \\
-120 & -20 & 20 & 5 & 5 & 20 & -20 & 120
-\end{pmatrix}
-\]
+<p align="center">
+  <img src="images/momijimanjumat.png" width="500">
+</p>
 
 This matrix heavily favors corners (120) and penalizes adjacent squares (e.g., -20, -40).
 
