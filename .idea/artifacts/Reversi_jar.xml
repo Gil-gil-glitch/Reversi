@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Reversi:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Reversi_jar</output-path>
+    <root id="archive" name="Reversi.jar">
+      <element id="module-output" name="Reversi" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/21.0.6/javafx-base-21.0.6-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/21.0.6/javafx-base-21.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/21.0.6/javafx-controls-21.0.6-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/21.0.6/javafx-fxml-21.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/21.0.6/javafx-controls-21.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21.0.6/javafx-graphics-21.0.6-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21.0.6/javafx-graphics-21.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/21.0.6/javafx-fxml-21.0.6-win.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
