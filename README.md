@@ -108,6 +108,10 @@ You will need the following software installed on your system:
     java course.reversi.Reversi
     ```
 
+ 3. *Run the JAR file**
+
+    As long as you have the Java Development Environment installed on your device, you can just click on the JAR file on the /out directory to run the game.
+
 ### Option 2: Using an IDE
 
 1.  **Import the Project**
