@@ -11,6 +11,7 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21.0.6/javafx-graphics-21.0.6-win.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21.0.6/javafx-graphics-21.0.6.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/21.0.6/javafx-fxml-21.0.6-win.jar" path-in-jar="/" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:21.0.6" />
     </root>
   </artifact>
 </component>

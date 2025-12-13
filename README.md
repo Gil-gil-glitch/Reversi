@@ -3,7 +3,9 @@
 Hello!
 
 This project, **Reversi** (also known as Othello), is a robust implementation of the classic 8x8 board game developed in Java. It is a continuation of my work from a previous programming course and now serves as a platform to integrate and test various Artificial Intelligence strategies.
-
+<p align="center">
+  <img src="images/reversi-board-1.png" width="500">
+</p>
 ---
 
 ## Game Modes and Features
@@ -120,6 +122,15 @@ You will need the following software installed on your system:
     * Right-click on the file and select **Run**.
 
 ---
+
+### Option 3: Using the JAR file
+
+1. Clone this repository 
+    ```bash
+    git clone https://github.com/Gil-gil-glitch/Reversi.git
+    ```
+2. Navigate to the output folder and download the jar file
+3. Right-click on the jar file and it should run
 
 ## Future Plans (AI Integration)
 
