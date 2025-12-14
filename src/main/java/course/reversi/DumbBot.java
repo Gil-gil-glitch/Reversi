@@ -3,14 +3,10 @@ package course.reversi;
 /*
 
 
-    2600248450
+    Description:
 
-    Content:
-
-    Out of the two bots (so far), DumbBot is the easiest to play against.... (I would like to think it is). Easy in the
-    sense that DumbBot literally just iterates through its possible moves and using Java's Random library, picks
-    a random move.
-
+    A basic strategic bot. It prioritizes corner positions (A1, A8, H1, H8) due to their high value.
+    If no corner is available, it makes a random move.
 
  */
 
