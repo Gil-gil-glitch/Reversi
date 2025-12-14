@@ -21,18 +21,97 @@ Reversi currently supports the following modes:
 
 The 'Human vs Bot' mode features four distinct opponents. Their difficulty ranges from purely random play to an advanced minimax search agent.
 
-| Bot Name | Strategy / Description | Difficulty | Key AI Technique |
-| :--- | :--- | :--- | :--- |
-| **DumbBot** | The easiest opponent. It selects a **random valid move** from all available options. | Very Easy | Random Selection |
-| **MapleBot** | A basic strategic bot. It **prioritizes corner positions** (A1, A8, H1, H8) due to their high value. If no corner is available, it makes a random move. | Easy | Corner Prioritization |
-| **CastellaBot** | A more refined strategic bot. It chooses the move that results in the **highest combined score** of flipped pieces and a static **positional weight** for the newly placed piece. | Medium | Static Evaluation Function |
-| **MomijiManjuBot** | The most challenging opponent. It uses an advanced **game-tree search algorithm** to look several moves ahead. | Hard | Minimax with Alpha-Beta Pruning |
+| Bot Name | Strategy / Description                                                                                                                                                            | Difficulty | Key AI Technique |
+| :--- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------| :--- |
+| **DumbBot** | A basic strategic bot. It **prioritizes corner positions** (A1, A8, H1, H8) due to their high value. If no corner is available, it makes a random move.                           | Easy       | Corner Prioritization  |
+| **MapleBot** | A more refined strategic bot. It chooses the move that results in the **highest combined score** of flipped pieces and a static **positional weight** for the newly placed piece. | Medium     | Static Evaluation Function |
+| **CastellaBot** | The second most challenging opponent. It uses an advanced **game-tree search algorithm** to look several moves ahead.                                                             | Hard       | Minimax with Alpha-Beta Pruning |
+| **MomijiManjuBot** |  The most challenging opponent. It evaluates moves using a **learned value function**, trained via **temporal-difference reinforcement learning** over multiple board features. | Difficult | Temporal-Difference Reinforcement Learning |
+
+---
+## Reinforcement Learning Agent: MomijiManjuBot Explained
+
+The **MomijiManjuBot** is the most advanced opponent in the system. Instead of relying on a fixed search depth or hand-tuned heuristics, it uses a **reinforcement learning approach** to learn how to evaluate board positions from experience.
+
+### 1. Value-Based Reinforcement Learning (TD Learning)
+
+MomijiManjuBot models the game as a sequence of states and learns a **state-value function**:
+
+<p align="center">
+  <img src="images/state-value_function-removebg.png" width="500">
+</p>
+
+
+where:
+- \($f_i(S)$)are hand-designed features extracted from the board state
+- \( $w_i$) \) are learned weights
+
+The bot is trained using **Temporal-Difference (TD(0)) learning**, where weights are updated based on the difference between the predicted value of a state and a target value derived from future outcomes.
+
+Training is performed through repeated self-play games against progressively stronger opponents, allowing the bot to improve its evaluation over time.
 
 ---
 
-## The Advanced AI: MomijiManjuBot Explained
+### 2. Training Process and Learning Signal
 
-The **MomijiManjuBot** uses core game AI techniques to determine the best move, serving as the strongest opponent in the current version.
+During training, MomijiManjuBot plays full games of Reversi and receives a **terminal reward** at the end of each game:
+
+- **+1** for a win
+- **−1** for a loss
+- **0** for a draw
+
+After a game ends, the bot updates its weights by backing up this final reward through the visited states using the TD error:
+
+<p align="center">
+  <img src="images/update-weight-with-final-reward-removebg.png" width="500">
+</p>
+
+where $\mathbf{\alpha}$ is the learning rate.  
+This allows the bot to gradually learn which board features contribute to winning outcomes.
+
+---
+
+### 3. Feature-Based Board Evaluation
+
+Instead of a static evaluation function, MomijiManjuBot evaluates board states using a **learned feature representation**, including:
+
+- **Piece Difference:** Normalized difference in disc count
+- **Mobility Difference:** Difference in available legal moves
+- **Corner Control:** Ownership of the four corners
+- **Frontier Discs:** Difference in discs adjacent to empty squares
+- **Risky Squares:** Occupancy of corner-adjacent X- and C-squares
+
+The relative importance of these features is determined automatically during training through weight updates.
+
+---
+
+### 4. Action Selection (After Training)
+
+Once training is complete, MomijiManjuBot plays deterministically:
+
+- It simulates each legal move
+- Evaluates the resulting board state using the learned value function
+- Selects the move with the highest estimated value
+
+Unlike CastellaBot, **MomijiManjuBot does not perform deep game-tree search**. Instead, it relies on its learned evaluation to make strong decisions based on experience.
+
+---
+
+### 5. Key Difference from CastellaBot
+
+| CastellaBot | MomijiManjuBot |
+|------------|----------------|
+| Searches ahead using Minimax | Evaluates states using learned values |
+| Fixed evaluation function | Learned evaluation function |
+| No learning | Improves through training |
+| Strong tactical play | Strong strategic generalization |
+
+---
+---
+
+## GameTree-Search Algorithm: CastellaBot Explained
+
+The **CastellaBot** uses core game AI techniques to determine the best move, serving as the strongest opponent in the current version.
 
 ### 1. Minimax Search with Alpha-Beta Pruning
 
