@@ -4,15 +4,16 @@ package course.reversi;
 
     Content:
 
-    Out of the two bots (so far), MapleBot is the harder to play against.... (I would like to think it is). MapleBot
-    simply goes for corners, however, if not possible, then it will go for a random move.
-
+    MapleBot is a more refined strategic bot. It chooses the move that results in the
+    highest combined score of flipped pieces and a static positional weight for the
+    newly placed piece.
 
  */
 import java.util.List;
 
 public class MapleBot extends SimpleBot {
 
+    //static positional weights for each part of the board
     private static final int[][] POSITION_WEIGHTS = {
             {100, -20, 10, 5, 5, 10, -20, 100},
             {-20, -50, -2, -2, -2, -2, -50, -20},
