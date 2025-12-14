@@ -1,5 +1,12 @@
 package course.reversi;
 
+/*
+
+    Description:
+    MomijiManjuBot is a Reversi (Othello) agent trained using a simple reinforcement learning
+    algorithm based on Temporal-Difference (TD) learning with linear function approximation.
+
+ */
 import java.util.List;
 
 public class MomijiManjuBot extends SimpleBot {

@@ -1,11 +1,15 @@
 package course.reversi;
 
+/*
+
+    Description:
+    CastellaBot is the second-most challenging bot. It uses an advanced game-tree search algorithm to look
+    several moves ahead.
+
+ */
+
 import java.util.List;
 
-import static course.reversi.BasicScoring.calculateScore;
-
-
-import java.util.List;
 
 public class CastellaBot extends SimpleBot {
 
