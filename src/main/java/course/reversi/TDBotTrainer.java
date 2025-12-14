@@ -1,5 +1,16 @@
 package course.reversi;
 
+/*
+
+ Description:
+ Trains the MomijiManjuBot using a simple Temporal-Difference (TD(0))
+ reinforcement learning algorithm with linear function approximation.
+ The trainer plays repeated games of Reversi against increasingly
+ strong opponents (curriculum learning), updates feature weights
+ using the TD error, and returns the learned weight vector.
+
+*/
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
