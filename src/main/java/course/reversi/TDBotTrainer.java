@@ -22,7 +22,7 @@ public class TDBotTrainer {
     private static final double ALPHA = 0.01;      // Learning Rate
     private static final int NUM_FEATURES = 10;
 
-    private static final int EPOCHS_PER_STAGE = 1000;
+    private static final int EPOCHS_PER_STAGE = 10000;
     private static final int TOTAL_EPOCHS = EPOCHS_PER_STAGE * 3;
 
     private double[] weights = new double[NUM_FEATURES];
@@ -56,13 +56,13 @@ public class TDBotTrainer {
         System.out.println("\n--- Stage 1: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("DumbBot", 0);
 
-        opponentAgent = new MapleBot();
-        System.out.println("\n--- Stage 2: Training against MapleBot for " + EPOCHS_PER_STAGE + " epochs ---");
-        runTrainingStage("MapleBot", EPOCHS_PER_STAGE);
+        //opponentAgent = new DumbBot();
+        //System.out.println("\n--- Stage 2: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
+        //runTrainingStage("MapleBot", EPOCHS_PER_STAGE);
 
-        opponentAgent = new CastellaBot();
-        System.out.println("\n--- Stage 3: Training against CastellaBot for " + EPOCHS_PER_STAGE + " epochs ---");
-        runTrainingStage("CastellaBot", EPOCHS_PER_STAGE * 2);
+        //opponentAgent = new DumbBot();
+        //System.out.println("\n--- Stage 3: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
+        //runTrainingStage("CastellaBot", EPOCHS_PER_STAGE * 2);
 
         System.out.println("\nTraining finished. Final Weights: " + Arrays.toString(weights));
         return this.weights;

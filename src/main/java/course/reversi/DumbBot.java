@@ -28,11 +28,11 @@ public class DumbBot extends SimpleBot {
         }
 
         // goes for corners: A1, A8, H1, and H8.
-        for (String move : validMoves) {
-            if (move.equals("A1") || move.equals("A8") || move.equals("H1") || move.equals("H8")) {
-                return convertMove(move);
-            }
-        }
+        //for (String move : validMoves) {
+        //    if (move.equals("A1") || move.equals("A8") || move.equals("H1") || move.equals("H8")) {
+        //        return convertMove(move);
+        //    }
+        //}
 
         // if not possible, choose a random piece
         String move = validMoves.get((int) (Math.random() * validMoves.size()));
