@@ -59,11 +59,11 @@ public class TDBotTrainer {
         opponentAgent = new MapleBot();
         System.out.println("\n--- Stage 2: Training against MapleBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("MapleBot", EPOCHS_PER_STAGE);
-/*
+
         opponentAgent = new CastellaBot();
         System.out.println("\n--- Stage 3: Training against CastellaBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("CastellaBot", EPOCHS_PER_STAGE * 2);
-
+/*
         opponentAgent = new MomijiManjuBot();
         System.out.println("\n--- Stage 3: Training against MomijiManjuBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("MomijiManjuBot", EPOCHS_PER_STAGE * 2);

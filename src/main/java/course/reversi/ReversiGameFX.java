@@ -227,9 +227,26 @@ public class ReversiGameFX extends Application {
             -   showing pieces
             -   valid moves
             -   click event handlers (when a piece is being put down)
+            -   checks if the current player is stuck
 
          */
 
+        // skipping mechanism
+        List<String> currentValidMoves = Reversi.getValidMoves(board, currentPlayer);
+
+        if (currentValidMoves.isEmpty()) {
+
+            char opponent = (currentPlayer == BLACK) ? WHITE : BLACK;
+            if (Reversi.getValidMoves(board, opponent).isEmpty()) {
+                showGameOver();
+                return;
+            } else {
+
+                System.out.println("No moves for " + currentPlayer + ". Skipping turn...");
+                switchPlayer();
+                return;
+            }
+        }
 
         boardGrid.getChildren().clear();        // clear a previous visualization of the board
 
