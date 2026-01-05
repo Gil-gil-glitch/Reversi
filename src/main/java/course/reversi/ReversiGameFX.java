@@ -238,7 +238,7 @@ public class ReversiGameFX extends Application {
 
             char opponent = (currentPlayer == BLACK) ? WHITE : BLACK;
             if (Reversi.getValidMoves(board, opponent).isEmpty()) {
-                showGameOver();
+                javafx.application.Platform.runLater(() -> showGameOver());
                 return;
             } else {
 
