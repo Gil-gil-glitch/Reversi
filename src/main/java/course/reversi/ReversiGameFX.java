@@ -393,7 +393,10 @@ public class ReversiGameFX extends Application {
                                 (bot instanceof  CastellaBot) ? "Human vs CastellaBot":
                                         "Human vs MomijiManjuBot";
 
-        Reversi.saveMovesToFile(modeText);
+        String playerBlack = "Human";
+        String playerWhite = (bot == null) ? "Human2" : bot.getClass().getSimpleName();
+
+        Reversi.saveMovesToFile(modeText, playerBlack, playerWhite);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");

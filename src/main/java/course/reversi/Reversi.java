@@ -251,37 +251,51 @@ public class Reversi {
         }
     }
 
-    // saves the turns to a txtfile
-    public static void saveMovesToFile(String gameMode) {
+    // saves the turns to a txtfile. This method will later be foundational for collecting data for a
+    // simple machine learning bot
+    public static void saveMovesToFile(String gameMode, String playerBlack, String playerWhite) {
         try {
-            String folderName = "GameLogs";
-            File directory = new File(folderName);
-
-            if (!directory.exists()){
+            File directory = new File("GameLogs");
+            if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            // Get the current date and time
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-            String timestamp = dateFormat.format(new Date());
-            String safeGameMode = gameMode.replaceAll("[^a-zA-Z0-9]", "_");
-
-            // Construct filename: "Human_vs_MapleBot_2025-01-31_14-30-45.txt" in the GameLogs folder
-            String filename = folderName + File.separator + safeGameMode + "_" + timestamp + ".txt";
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String filename = "GameLogs/game_" + timestamp + ".csv";
 
             FileWriter writer = new FileWriter(filename);
 
-            writer.write("Game Mode: " + gameMode + "\n\n");
+            writer.write("turn,color,move,player_name\n");
 
-            for (String move : moveHistory) {
-                writer.write(move + "\n");
+            int turnCounter = 1;
+            for (String entry : moveHistory) {
+                String[] parts = entry.split(": ");
+
+                if (parts.length < 2) continue;
+
+                String colorIcon = parts[0];
+                String coordinate = parts[1];
+                String colorLabel;
+                String playerName;
+
+                if (colorIcon.equals(String.valueOf(BLACK))) {
+                    colorLabel = "BLACK";
+                    playerName = playerBlack;
+                } else {
+                    colorLabel = "WHITE";
+                    playerName = playerWhite;
+                }
+
+                writer.write(turnCounter + "," + colorLabel + "," + coordinate + "," + playerName + "\n");
+
+                turnCounter++;
             }
 
             writer.close();
-            System.out.println("Move history saved to " + filename);
+            System.out.println("ML-Ready log saved to: " + filename);
 
         } catch (IOException e) {
-            System.err.println("An error occurred while saving the move history: " + e.getMessage());
+            System.err.println("Error saving game log: " + e.getMessage());
         }
     }
 
