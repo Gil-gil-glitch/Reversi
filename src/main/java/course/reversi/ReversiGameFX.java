@@ -278,10 +278,6 @@ public class ReversiGameFX extends Application {
                             Reversi.makeMove(board, r, c, currentPlayer);
                             switchPlayer();
 
-                            if (Reversi.getValidMoves(board, BLACK).isEmpty() && Reversi.getValidMoves(board, WHITE).isEmpty()) {
-                                showGameOver();
-                            }
-
                         }
                     }
 
