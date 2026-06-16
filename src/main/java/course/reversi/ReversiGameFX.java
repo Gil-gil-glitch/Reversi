@@ -451,7 +451,6 @@ public class ReversiGameFX extends Application {
                 Reversi.makeMove(board, botMove[0], botMove[1], WHITE);
                 updateScores();
                 switchPlayer();
-                updateBoard();
             }
         });
         pause.play();
