@@ -63,14 +63,14 @@ public class TDBotTrainer {
         opponentAgent = new CastellaBot();
         System.out.println("\n--- Stage 3: Training against CastellaBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("CastellaBot", EPOCHS_PER_STAGE * 2);
-/*
+
         opponentAgent = new MomijiManjuBot();
         System.out.println("\n--- Stage 3: Training against MomijiManjuBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("MomijiManjuBot", EPOCHS_PER_STAGE * 2);
 
         opponentAgent = new DumbBot();
         System.out.println("\n--- Stage 4: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
-        runTrainingStage("DumbBot", EPOCHS_PER_STAGE * 3);*/
+        runTrainingStage("DumbBot", EPOCHS_PER_STAGE * 5);
 
         System.out.println("\nTraining finished. Final Weights: " + Arrays.toString(weights));
         return this.weights;
