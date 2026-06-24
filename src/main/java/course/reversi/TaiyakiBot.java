@@ -45,6 +45,40 @@ public class TaiyakiBot extends SimpleBot {
         if (depth == 0 || validMoves.isEmpty()){
             return evaluateBoard(board, botPlayer);
         }
+
+        if (isMaximizing){
+            int maxEval = Integer.MIN_VALUE;
+
+            for (String move : validMoves){
+
+                int[] coords = convertMove(move);
+                char[][] simulated = Reversi.copyBoard(board);
+
+                Reversi.makeMove(simulated, coords[0], coords[1], currentPlayer);
+
+                int eval = alphaBeta(simulated, depth - 1, alpha, beta, false, botPlayer);
+                maxEval = Math.max(maxEval, eval);
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) break;
+            }
+
+            return maxEval;
+
+        } else {
+            int minEval = Integer.MAX_VALUE;
+            for (String move : validMoves) {
+                int[] coords = convertMove(move);
+                char[][] simulated = Reversi.copyBoard(board);
+                Reversi.makeMove(simulated, coords[0], coords[1], currentPlayer);
+
+                int eval = alphaBeta(simulated, depth - 1, alpha, beta, true, botPlayer);
+                minEval = Math.min(minEval, eval);
+                beta = Math.min(beta, eval);
+                if (beta <= alpha) break; // Pruning
+            }
+            return minEval;
+
+        }
     }
 
     private int evaluateBoard(char[][] board, char botPlayer) {
