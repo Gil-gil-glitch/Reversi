@@ -88,7 +88,7 @@ public class ReversiGameFX extends Application {
         Button humanVsMapleBotButton = new Button("Human vs MapleBot");
         Button humanVsCastellaBotButton = new Button("Human vs. CastellaBot");
         Button humanVsMomijiManjuBotButton = new Button("Human vs. MomijiManjuBot");
-        Button humanVsTaiyakiBotButton = new Button("HUman vs TaiyakiBot");
+        Button humanVsTaiyakiBotButton = new Button("Human vs TaiyakiBot");
 
         Button helpButton = new Button("Help");
         helpButton.setOnAction(e -> showHelp());
