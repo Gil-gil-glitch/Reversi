@@ -23,14 +23,25 @@ public class TaiyakiBot extends SimpleBot {
 
     @Override
     public int[] getBotMove(char[][] board, char player) {
-
         List<String> validMoves = Reversi.getValidMoves(board, player);
         if (validMoves.isEmpty()) return null;
 
         String bestMove = validMoves.get(0);
         int bestScore = Integer.MIN_VALUE;
 
+        for (String move : validMoves) {
+            int[] coords = convertMove(move);
+            char[][] simulated = Reversi.copyBoard(board);
+            Reversi.makeMove(simulated, coords[0], coords[1], player);
 
+            // Call alpha-beta evaluation
+            int score = alphaBeta(simulated, MAX_DEPTH - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, false, player);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
         return convertMove(bestMove);
     }
 

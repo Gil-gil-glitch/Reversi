@@ -393,7 +393,9 @@ public class ReversiGameFX extends Application {
                 (bot instanceof DumbBot) ? "Human vs DumbBot" :
                         (bot instanceof MapleBot) ? "Human vs MapleBot" :
                                 (bot instanceof  CastellaBot) ? "Human vs CastellaBot":
-                                        "Human vs MomijiManjuBot";
+                                        (bot instanceof MomijiManjuBot) ? "Human vs MomijiManjuBot":
+                                                "Human vs TaiyakiBot"
+                ;
 
         String playerBlack = "Human";
         String playerWhite = (bot == null) ? "Human2" : bot.getClass().getSimpleName();
