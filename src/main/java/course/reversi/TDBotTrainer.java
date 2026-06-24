@@ -68,8 +68,16 @@ public class TDBotTrainer {
         System.out.println("\n--- Stage 3: Training against MomijiManjuBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("MomijiManjuBot", EPOCHS_PER_STAGE * 2);
 
+        opponentAgent = new TaiyakiBot();
+        System.out.println("\n--- Stage 4: Training against TaiyakiBot for " + EPOCHS_PER_STAGE + " epochs ---");
+        runTrainingStage( "TaiyakiBot", EPOCHS_PER_STAGE * 3);
+
+        opponentAgent = new MomijiManjuBot();
+        System.out.println("\n--- Stage 3: Training against MomijiManjuBot for " + EPOCHS_PER_STAGE + " epochs ---");
+        runTrainingStage("MomijiManjuBot", EPOCHS_PER_STAGE * 3);
+
         opponentAgent = new DumbBot();
-        System.out.println("\n--- Stage 4: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
+        System.out.println("\n--- Stage 6: Training against DumbBot for " + EPOCHS_PER_STAGE + " epochs ---");
         runTrainingStage("DumbBot", EPOCHS_PER_STAGE * 5);
 
         System.out.println("\nTraining finished. Final Weights: " + Arrays.toString(weights));
