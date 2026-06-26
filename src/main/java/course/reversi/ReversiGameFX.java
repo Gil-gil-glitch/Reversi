@@ -70,6 +70,7 @@ public class ReversiGameFX extends Application {
             -   Human vs CastellaBot button
             -   Human vs MomijiManjuBot button
             -   Human vs TaiyakiBot button
+            -   Human vs AnmitsuBot button
             -   Help
 
          */
@@ -89,6 +90,7 @@ public class ReversiGameFX extends Application {
         Button humanVsCastellaBotButton = new Button("Human vs. CastellaBot");
         Button humanVsMomijiManjuBotButton = new Button("Human vs. MomijiManjuBot");
         Button humanVsTaiyakiBotButton = new Button("Human vs TaiyakiBot");
+        Button humanVsAnmitsuBotButton = new Button("Human vs AnmitsuBot");
 
         Button helpButton = new Button("Help");
         helpButton.setOnAction(e -> showHelp());
@@ -99,8 +101,9 @@ public class ReversiGameFX extends Application {
         humanVsCastellaBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_CASTELLA_BOT));
         humanVsMomijiManjuBotButton.setOnAction(e->startGame(GameMode.HUMAN_VS_MOMIJI_MANJU_BOT));
         humanVsTaiyakiBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_TAIYAKI_BOT));
+        humanVsAnmitsuBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_ANMITSU_BOT));
 
-        menuRoot.getChildren().addAll(titleLabel, humanVsHumanButton, humanVsDumbBotButton, humanVsMapleBotButton, humanVsCastellaBotButton, humanVsMomijiManjuBotButton, humanVsTaiyakiBotButton, helpButton);
+        menuRoot.getChildren().addAll(titleLabel, humanVsHumanButton, humanVsDumbBotButton, humanVsMapleBotButton, humanVsCastellaBotButton, humanVsMomijiManjuBotButton, humanVsTaiyakiBotButton, humanVsAnmitsuBotButton, helpButton);
 
         //background color
         Color shogiWood = Color.rgb(222, 184, 135);
@@ -136,6 +139,7 @@ public class ReversiGameFX extends Application {
             -   castellaBotButton
             -   momijiManjuBotButton
             -   taiyakiBotButton
+            -   anmitsuBotButton
             -   resetButton
             -   helpButton
 
@@ -195,8 +199,10 @@ public class ReversiGameFX extends Application {
             bot = new CastellaBot();
         } else if (gameMode == GameMode.HUMAN_VS_MOMIJI_MANJU_BOT) {
             bot = new MomijiManjuBot();
-        } else if (gameMode == GameMode.HUMAN_VS_TAIYAKI_BOT){
+        } else if (gameMode == GameMode.HUMAN_VS_TAIYAKI_BOT) {
             bot = new TaiyakiBot();
+        } else if (gameMode == GameMode.HUMAN_VS_ANMITSU_BOT){
+            bot = new AnmitsuBot();
         } else {
             bot = null;  // bot is set to null in the case for human vs human mode.
         }
@@ -394,7 +400,8 @@ public class ReversiGameFX extends Application {
                         (bot instanceof MapleBot) ? "Human vs MapleBot" :
                                 (bot instanceof  CastellaBot) ? "Human vs CastellaBot":
                                         (bot instanceof MomijiManjuBot) ? "Human vs MomijiManjuBot":
-                                                "Human vs TaiyakiBot"
+                                                (bot instanceof TaiyakiBot) ? "Human vs TaiyakiBot" :
+                                                        "Human vs AnmitsuBot"
                 ;
 
         String playerBlack = "Human";
@@ -507,7 +514,8 @@ public class ReversiGameFX extends Application {
         HUMAN_VS_MAPLE_BOT,
         HUMAN_VS_CASTELLA_BOT,
         HUMAN_VS_MOMIJI_MANJU_BOT,
-        HUMAN_VS_TAIYAKI_BOT
+        HUMAN_VS_TAIYAKI_BOT,
+        HUMAN_VS_ANMITSU_BOT
 
     }
 }
