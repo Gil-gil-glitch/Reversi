@@ -93,22 +93,30 @@ public class TaiyakiBot extends SimpleBot {
     }
 
     private int evaluateBoard(char[][] board, char botPlayer) {
-        char opponent = (botPlayer == BLACK) ? WHITE : BLACK;
+        char opponent = Reversi.getOpponent(botPlayer);
+
+        int botPieces = Reversi.countPieces(board, botPlayer);
+        int oppPieces = Reversi.countPieces(board, opponent);
+        int totalPieces = botPieces + oppPieces;
+
+        // Counter Strategy for Quiet Moves and Evaporation Strategy
+        // If 52 or more squares are filled, the game is in the final 12 moves. In this phase, only pure score rules.
+        if (totalPieces >= 52) {
+            return (botPieces - oppPieces) * 1000; // Heavily incentivize raw piece count
+        }
+
+        // --- STANDARD MID-GAME EVALUATION ---
         int score = 0;
 
         // Positional Matrix Weighting
-
-        for (int r = 0; r < 8; r++){
-
-            for (int c = 0; c < 8; c++){
-
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
                 if (board[r][c] == botPlayer) score += BOARD_VALUE_MATRIX[r][c];
                 else if (board[r][c] == opponent) score -= BOARD_VALUE_MATRIX[r][c];
-
             }
         }
 
-        // Mobility Advantage for Mid-Game
+        // Mobility Advantage
         int botMoves = Reversi.getValidMoves(board, botPlayer).size();
         int oppMoves = Reversi.getValidMoves(board, opponent).size();
         score += (botMoves - oppMoves) * 15;
