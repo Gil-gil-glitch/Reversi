@@ -131,4 +131,12 @@ public class AnmitsuBotTrainer {
             this.phase = p;
         }
     }
+
+    public static class Main {
+        public static void main(String[] args) {
+            AnmitsuBotTrainer trainer = new AnmitsuBotTrainer();
+            trainer.train();
+        }
+    }
+
 }

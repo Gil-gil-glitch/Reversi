@@ -161,3 +161,4 @@ public class AnmitsuBot extends SimpleBot {
         if (endgame.length == NUM_FEATURES) this.endgameWeights = endgame.clone();
     }
 }
+
