@@ -150,6 +150,8 @@ public class AnmitsuBot extends SimpleBot {
     }
 
     private void setDefaultWeights() {
+
+        // Adjust these weights when training is complete
         this.openingWeights = new double[]{-0.2, 2.0, 5.0, 1.5, -2.0, -1.0, -2.0, -1.0, 0.5, -0.2};
         this.midgameWeights = new double[]{0.1, 1.5, 6.0, 1.0, -1.5, -0.5, -1.5, -0.5, 0.8, -0.5};
         this.endgameWeights = new double[]{5.0, 0.2, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2};
@@ -161,4 +163,3 @@ public class AnmitsuBot extends SimpleBot {
         if (endgame.length == NUM_FEATURES) this.endgameWeights = endgame.clone();
     }
 }
-
