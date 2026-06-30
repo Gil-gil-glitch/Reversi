@@ -56,18 +56,24 @@ public class TrainingVisualizer extends Application {
         AnmitsuBotTrainer trainer = new AnmitsuBotTrainer();
         int windowSize = 100;
 
-        // This outer loop keeps the training running forever
         while (true) {
-            for (int stage = 1; stage <= 3; stage++) {
-                SimpleBot opponent = (stage == 1) ? new CastellaBot() :
-                        (stage == 2) ? new MomijiManjuBot() : new TaiyakiBot();
+            for (int stage = 1; stage <= 4; stage++) {
+                // Stage 1: DumbBot, Stage 2: CastellaBot, Stage 3: MomijiManjuBot, Stage 4: TaiyakiBot
+                SimpleBot opponent = (stage == 1) ? new DumbBot() :
+                        (stage == 2) ? new CastellaBot() :
+                                (stage == 3) ? new MomijiManjuBot() : new TaiyakiBot();
 
                 int winsInWindow = 0;
 
-                // Let's run chunks of 1,000 games per opponent tier
                 for (int i = 1; i <= 1000; i++) {
                     boolean won = trainer.playSingleMatchWithResult(opponent);
                     if (won) winsInWindow++;
+
+                    // Give your CPU a microsecond break during TaiyakiBot sessions
+                    // so it doesn't starve the JavaFX Application UI Thread
+                    if (stage == 3 && i % 10 == 0) {
+                        try { Thread.sleep(1); } catch (InterruptedException ignored) {}
+                    }
 
                     if (i % windowSize == 0) {
                         double currentWinRate = (winsInWindow * 100.0) / windowSize;
@@ -77,25 +83,23 @@ public class TrainingVisualizer extends Application {
                         final double finalWinRate = currentWinRate;
                         final int currentEpoch = epochCounter;
 
-                        // Push UI changes to the JavaFX Application Thread safely
+                        // Push UI updates safely
                         Platform.runLater(() -> {
                             winRateSeries.getData().add(new XYChart.Data<>(currentEpoch, finalWinRate));
 
-                            // Handle the sliding viewport effect
                             if (currentEpoch > MAX_DATA_POINTS) {
                                 xAxis.setLowerBound(currentEpoch - MAX_DATA_POINTS);
                                 xAxis.setUpperBound(currentEpoch);
 
-                                // Optional memory management: trim old data points off-screen
-                                // so the chart array doesn't grow infinitely in RAM over days of running
-                                if (winRateSeries.getData().size() > MAX_DATA_POINTS * 2) {
-                                    winRateSeries.getData().remove(0);
+                                // Keep memory low by actively pruning dead data points
+                                if (winRateSeries.getData().size() > MAX_DATA_POINTS * 1.5) {
+                                    winRateSeries.getData().remove(0, winRateSeries.getData().size() - MAX_DATA_POINTS);
                                 }
                             }
                         });
 
-                        // Control pacing: a 30ms delay lets you watch the logic unfold smoothly
-                        try { Thread.sleep(30); } catch (InterruptedException ignored) {}
+                        // Increased sleep window slightly to allow JavaFX to clear its pulse cycles
+                        try { Thread.sleep(50); } catch (InterruptedException ignored) {}
                     }
                 }
             }
