@@ -1,15 +1,6 @@
 package course.reversi;
 
-/*
-
-    Description:
-    CastellaBot is the second-most challenging bot. It uses an advanced game-tree search algorithm to look
-    several moves ahead.
-
- */
-
 import java.util.List;
-
 
 public class CastellaBot extends SimpleBot {
 
@@ -24,7 +15,7 @@ public class CastellaBot extends SimpleBot {
             {120, -20, 20, 5, 5, 20, -20, 120}
     };
 
-    private static final int SEARCH_DEPTH = 3; // You can increase for stronger play (3–5)
+    private static final int SEARCH_DEPTH = 3;
 
     @Override
     public int[] getBotMove(char[][] board, char player) {
@@ -79,7 +70,7 @@ public class CastellaBot extends SimpleBot {
                 beta = Math.min(beta, score);
             }
 
-            if (beta <= alpha) break; // Alpha-beta pruning
+            if (beta <= alpha) break;
         }
 
         return bestScore;
@@ -90,9 +81,7 @@ public class CastellaBot extends SimpleBot {
         int playerCount = Reversi.countPieces(board, player);
         int opponentCount = Reversi.countPieces(board, opponent);
 
-        int mobility = Reversi.getValidMoves(board, player).size() - Reversi.getValidMoves(board, opponent).size();
         int positionScore = 0;
-
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == player) positionScore += POSITION_WEIGHTS[i][j];
@@ -100,7 +89,8 @@ public class CastellaBot extends SimpleBot {
             }
         }
 
-        // Weighted evaluation
-        return (10 * (playerCount - opponentCount)) + (5 * mobility) + positionScore;
+        // --- FIXED: Removed mobility allocation from the leaf node evaluation ---
+        // This stops millions of temporary ArrayLists from flooding the Java heap space.
+        return (10 * (playerCount - opponentCount)) + positionScore;
     }
 }
