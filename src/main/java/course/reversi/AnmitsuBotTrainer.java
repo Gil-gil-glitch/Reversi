@@ -132,6 +132,17 @@ public class AnmitsuBotTrainer {
         }
     }
 
+    // Helper function for AnmitsuBotTrainer.java so the Visualizer can feed data from it
+    public boolean playSingleMatchWithResult(SimpleBot opponentInstance) {
+        char[][] board = new char[8][8];
+        Reversi.initializeBoard(board);
+
+        int p1Count = Reversi.countPieces(board, '⚫');
+        int p2Count = Reversi.countPieces(board, '⚪');
+
+        return p1Count > p2Count; // Return true if AnmitsuBot secured a victory
+    }
+
     public static class Main {
         public static void main(String[] args) {
             AnmitsuBotTrainer trainer = new AnmitsuBotTrainer();
