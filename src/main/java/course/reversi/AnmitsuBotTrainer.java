@@ -32,15 +32,19 @@ public class AnmitsuBotTrainer {
     public void train() {
         System.out.println("Starting AnmitsuBot Phase-Dependent Training...");
 
-        // Stage 1: Beat the structural bots
+        // Stage 1: Beat the random bot
+        opponentAgent = new DumbBot();
+        runTrainingStage("DumbBot");
+
+        // Stage 2: Beat the structural bots
         opponentAgent = new CastellaBot();
         runTrainingStage("CastellaBot");
 
-        // Stage 2: Self-play against MomijiManjuBot
+        // Stage 3: Self-play against MomijiManjuBot
         opponentAgent = new MomijiManjuBot();
         runTrainingStage("MomijiManjuBot");
 
-        // Stage 3: High-level refinement against TaiyakiBot (Look-ahead)
+        // Stage 4: High-level refinement against TaiyakiBot (Look-ahead)
         opponentAgent = new TaiyakiBot();
         runTrainingStage("TaiyakiBot");
 
