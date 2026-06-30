@@ -144,10 +144,57 @@ public class AnmitsuBotTrainer {
         char[][] board = new char[8][8];
         Reversi.initializeBoard(board);
 
-        int p1Count = Reversi.countPieces(board, '⚫');
-        int p2Count = Reversi.countPieces(board, '⚪');
+        char player1 = '⚫';
+        char player2 = '⚪';
+        char currentPlayer = player1;
 
-        return p1Count > p2Count; // Return true if AnmitsuBot secured a victory
+        List<HistoricalState> history = new ArrayList<>();
+
+        // Actually play the game out!
+        while (!Reversi.getValidMoves(board, '⚫').isEmpty() || !Reversi.getValidMoves(board, '⚪').isEmpty()) {
+            List<String> validMoves = Reversi.getValidMoves(board, currentPlayer);
+
+            if (!validMoves.isEmpty()) {
+                int[] move;
+                if (currentPlayer == player1) {
+                    AnmitsuBot.GamePhase phase = botAgent.getGamePhase(board);
+                    double[] features = botAgent.extractFeatures(board, player1);
+                    history.add(new HistoricalState(features, phase));
+
+                    // No random moves during visualizer stream to see true performance
+                    move = botAgent.getBotMove(board, player1);
+                } else {
+                    move = opponentInstance.getBotMove(board, player2);
+                }
+
+                if (move != null) Reversi.makeMove(board, move[0], move[1], currentPlayer);
+            }
+            currentPlayer = Reversi.getOpponent(currentPlayer);
+        }
+
+        // Perform the Temporal Difference learning update
+        int p1Count = Reversi.countPieces(board, player1);
+        int p2Count = Reversi.countPieces(board, player2);
+
+        double targetValue = (double)(p1Count - p2Count) / 64.0;
+
+        for (int i = history.size() - 1; i >= 0; i--) {
+            HistoricalState state = history.get(i);
+            double[] activeWeights = getTargetWeightArray(state.phase);
+
+            double valueS = botAgent.estimateValue(state.features, activeWeights);
+            double tdError = targetValue - valueS;
+
+            for (int j = 0; j < AnmitsuBot.NUM_FEATURES; j++) {
+                activeWeights[j] += ALPHA * tdError * state.features[j];
+            }
+            targetValue = valueS;
+        }
+
+        botAgent.setAllWeights(oWeights, mWeights, eWeights);
+
+        // 3. Return the real result to the graph
+        return p1Count > p2Count;
     }
 
     public static class Main {
