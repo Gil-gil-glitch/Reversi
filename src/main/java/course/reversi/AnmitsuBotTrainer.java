@@ -112,10 +112,11 @@ public class AnmitsuBotTrainer {
             double valueS = botAgent.estimateValue(state.features, activeWeights);
             double tdError = targetValue - valueS;
 
-            // Gradient descent step exclusively on the active layer
             for (int j = 0; j < AnmitsuBot.NUM_FEATURES; j++) {
+                // If the feature was positive and we did better than expected, boost the weight
                 activeWeights[j] += ALPHA * tdError * state.features[j];
             }
+
             targetValue = valueS;
         }
 
