@@ -95,9 +95,11 @@ public class AnmitsuBotTrainer {
         }
 
         // Back-propagation phase
+        // NEW DENSE REWARD: Normalizes the score difference between -1.0 and +1.0
         int p1Count = Reversi.countPieces(board, player1);
         int p2Count = Reversi.countPieces(board, player2);
-        double targetValue = (p1Count > p2Count) ? 1.0 : (p1Count < p2Count) ? -1.0 : 0.0;
+
+        double targetValue = (double)(p1Count - p2Count) / 64.0;
 
         for (int i = history.size() - 1; i >= 0; i--) {
             HistoricalState state = history.get(i);
