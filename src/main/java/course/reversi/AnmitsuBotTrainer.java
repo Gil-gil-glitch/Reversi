@@ -8,7 +8,7 @@ import java.util.Random;
 public class AnmitsuBotTrainer {
 
     private static final double ALPHA = 0.01;
-    private static final int EPOCHS_PER_STAGE = 10000;
+    private static final int EPOCHS_PER_STAGE = 200;
 
     private double[] oWeights = new double[AnmitsuBot.NUM_FEATURES];
     private double[] mWeights = new double[AnmitsuBot.NUM_FEATURES];
