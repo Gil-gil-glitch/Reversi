@@ -33,6 +33,8 @@ public class Reversi {
     // this function's purpose is setting up the initial board
     public static void initializeBoard(char[][] board)
     {
+        moveHistory.clear(); // clear history
+
         // ensures that every square of the board is empty
         for (int i = 0; i < SIZE; i++)
         {
