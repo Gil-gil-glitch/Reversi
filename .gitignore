@@ -1,3 +1,4 @@
+src/main/python/.venv
 GameLogs/
 target/
 !.mvn/wrapper/maven-wrapper.jar
