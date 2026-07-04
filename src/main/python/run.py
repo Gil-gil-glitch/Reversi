@@ -1,4 +1,7 @@
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import reversi_engine as re
 
 class AnmitsuBotPython:
     def __init__(self):
@@ -24,18 +27,15 @@ class AnmitsuBotPython:
         return 'ENDGAME'
 
     def extract_features(self, board, player):
-        import reversi_engine as re
-        
         features = np.zeros(self.num_features)
         opponent = 2 if player == 1 else 1
         
-        # 1. Base Counts & Masks
         p_mask = (board == player)
         o_mask = (board == opponent)
         p_count = np.sum(p_mask)
         o_count = np.sum(o_mask)
         
-        # F0: Piece Parity (Normalized)
+        # F0: Piece Parity
         features[0] = (p_count - o_count) / 64.0
         
         # F1: Corner Occupancy
@@ -43,31 +43,30 @@ class AnmitsuBotPython:
         o_corners = sum(1 for r, c in self.CORNERS if board[r, c] == opponent)
         features[1] = (p_corners - o_corners) / 4.0
         
-        # F2: C-Squares Danger (Negative feature if stepped on blindly)
+        # F2: C-Squares Danger
         p_csq = sum(1 for r, c in self.C_SQUARES if board[r, c] == player)
         o_csq = sum(1 for r, c in self.C_SQUARES if board[r, c] == opponent)
         features[2] = (p_csq - o_csq) / 8.0
         
-        # F3: X-Squares Danger (Highly dangerous diagonals)
+        # F3: X-Squares Danger
         p_xsq = sum(1 for r, c in self.X_SQUARES if board[r, c] == player)
         o_xsq = sum(1 for r, c in self.X_SQUARES if board[r, c] == opponent)
         features[3] = (p_xsq - o_xsq) / 4.0
         
-        # F4: Actual Player Mobility (Number of valid options available)
+        # F4: Player Mobility
         p_moves = len(re.get_valid_moves(board, player))
-        features[4] = p_moves / 32.0  # Normalized against max practical choices
+        features[4] = p_moves / 32.0
         
-        # F5: Opponent Mobility (Restricting enemy choices is key)
+        # F5: Opponent Mobility
         o_moves = len(re.get_valid_moves(board, opponent))
         features[5] = o_moves / 32.0
         
-        # F6 & F7: Frontier Pieces (Pieces exposed to empty spaces)
+        # F6 & F7: Frontier Pieces
         p_frontier = 0
         o_frontier = 0
         for r in range(8):
             for c in range(8):
                 if board[r, c] != 0:
-                    # Check if neighboring an empty slot
                     is_frontier = False
                     for dr, dc in re.DIRECTIONS:
                         nr, nc = r + dr, c + dc
@@ -81,12 +80,12 @@ class AnmitsuBotPython:
         features[6] = p_frontier / 64.0
         features[7] = o_frontier / 64.0
         
-        # F8: Edge Stability (Pieces locked into outer edges)
+        # F8: Edge Stability
         p_edges = np.sum(p_mask[0, :]) + np.sum(p_mask[7, :]) + np.sum(p_mask[:, 0]) + np.sum(p_mask[:, 7])
         o_edges = np.sum(o_mask[0, :]) + np.sum(o_mask[7, :]) + np.sum(o_mask[:, 0]) + np.sum(o_mask[:, 7])
         features[8] = (p_edges - o_edges) / 28.0
         
-        # F9: Board Center Control (Occupying rows/cols 2-5)
+        # F9: Center Control
         p_center = np.sum(p_mask[2:6, 2:6])
         o_center = np.sum(o_mask[2:6, 2:6])
         features[9] = (p_center - o_center) / 16.0
@@ -94,7 +93,6 @@ class AnmitsuBotPython:
         return features
 
     def get_bot_move(self, board, player):
-        import reversi_engine as re
         moves = re.get_valid_moves(board, player)
         if not moves: return None
         
@@ -123,9 +121,43 @@ class AnmitsuBotPython:
             predicted = np.dot(features, w)
             td_error = target_value - predicted
             
-            # Updates all 10 features instantly using optimized vectorized broadcast
             self.weights[phase] += self.alpha * td_error * features
             target_value = predicted
+
+def play_match(agent, opponent_type):
+    board = re.initialize_board()
+    player1, player2 = 1, 2
+    current_player = player1
+    history = []
+    
+    while len(re.get_valid_moves(board, player1)) > 0 or len(re.get_valid_moves(board, player2)) > 0:
+        moves = re.get_valid_moves(board, current_player)
+        if moves:
+            if current_player == player1:
+                phase = agent.get_game_phase(board)
+                feats = agent.extract_features(board, player1)
+                history.append((feats, phase))
+                
+                if np.random.rand() < 0.1:  # 10% Exploration
+                    move = moves[np.random.choice(len(moves))]
+                else:
+                    move = agent.get_bot_move(board, player1)
+            else:
+                if opponent_type == 'DumbBot':
+                    move = re.get_dumb_move(board, player2)
+                else:
+                    move = re.get_castella_move(board, player2)
+                    
+            if move:
+                re.make_move(board, move[0], move[1], current_player)
+        current_player = 2 if current_player == 1 else 1
+        
+    p1_final = np.sum(board == player1)
+    p2_final = np.sum(board == player2)
+    
+    agent.update_weights(history, p1_final - p2_final)
+    return p1_final > p2_final
+
 if __name__ == '__main__':
     print("Launching Vectorized Python Training Engine...")
     agent = AnmitsuBotPython()
@@ -154,12 +186,10 @@ if __name__ == '__main__':
                     'win_rate': win_rate
                 })
 
-    # --- Pandas and Matplotlib Telemetry Pass ---
     df = pd.DataFrame(log_data)
     df.to_csv("training_metrics.csv", index=False)
     print("\nTraining Metrics saved successfully to training_metrics.csv!")
 
-    # Pivot matrix configurations to draw clean multi-line progressions
     pivot_df = df.pivot(index='epoch', columns='opponent', values='win_rate')
     pivot_df.plot(marker='o', linewidth=2, figsize=(10, 6))
 
@@ -170,9 +200,9 @@ if __name__ == '__main__':
     plt.ylim(-5, 105)
 
     print("\nDisplaying Performance Chart. Final weight profiles:")
-    print("Opening Layer Vector:", np.round(agent.weights['OPENING'], 4))
-    print("Midgame Layer Vector:", np.round(agent.weights['MIDGAME'], 4))
-    print("Endgame Layer Vector:", np.round(agent.weights['ENDGAME'], 4))
+    print("Opening Layer Vector:\n", np.round(agent.weights['OPENING'], 4))
+    print("Midgame Layer Vector:\n", np.round(agent.weights['MIDGAME'], 4))
+    print("Endgame Layer Vector:\n", np.round(agent.weights['ENDGAME'], 4))
 
     plt.savefig("training_performance.png", dpi=300, bbox_inches='tight')
-    print("Performance plot successfully exported as 'training_performance.png'!")
+    print("\nPerformance plot successfully exported as 'training_performance.png'!")
