@@ -126,3 +126,53 @@ class AnmitsuBotPython:
             # Updates all 10 features instantly using optimized vectorized broadcast
             self.weights[phase] += self.alpha * td_error * features
             target_value = predicted
+if __name__ == '__main__':
+    print("Launching Vectorized Python Training Engine...")
+    agent = AnmitsuBotPython()
+    log_data = []
+
+    epochs_per_stage = 1500
+    window_size = 5
+    epoch_counter = 0
+
+    for opponent in ['DumbBot', 'CastellaBot']:
+        print(f"Commencing evolutionary stage against: {opponent}")
+        wins_in_window = 0
+
+        for i in range(1, (epochs_per_stage * window_size) + 1):
+            won = play_match(agent, opponent)
+            if won: wins_in_window += 1
+
+            if i % window_size == 0:
+                win_rate = (wins_in_window * 100.0) / window_size
+                wins_in_window = 0
+                epoch_counter += 1
+
+                log_data.append({
+                    'epoch': epoch_counter,
+                    'opponent': opponent,
+                    'win_rate': win_rate
+                })
+
+    # --- Pandas and Matplotlib Telemetry Pass ---
+    df = pd.DataFrame(log_data)
+    df.to_csv("training_metrics.csv", index=False)
+    print("\nTraining Metrics saved successfully to training_metrics.csv!")
+
+    # Pivot matrix configurations to draw clean multi-line progressions
+    pivot_df = df.pivot(index='epoch', columns='opponent', values='win_rate')
+    pivot_df.plot(marker='o', linewidth=2, figsize=(10, 6))
+
+    plt.title("AnmitsuBot Accelerated Training Performance")
+    plt.xlabel("Training Epoch Data Frames")
+    plt.ylabel("Win Rate Percentage (%)")
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.ylim(-5, 105)
+
+    print("\nDisplaying Performance Chart. Final weight profiles:")
+    print("Opening Layer Vector:", np.round(agent.weights['OPENING'], 4))
+    print("Midgame Layer Vector:", np.round(agent.weights['MIDGAME'], 4))
+    print("Endgame Layer Vector:", np.round(agent.weights['ENDGAME'], 4))
+
+    plt.savefig("training_performance.png", dpi=300, bbox_inches='tight')
+    print("Performance plot successfully exported as 'training_performance.png'!")
