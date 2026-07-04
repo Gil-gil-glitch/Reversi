@@ -45,7 +45,7 @@ if __name__ == '__main__':
     agent = AnmitsuBotPython()
     log_data = []
 
-    epochs_per_stage = 15
+    epochs_per_stage = 1500
     window_size = 5
     epoch_counter = 0
 
