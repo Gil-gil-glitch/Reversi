@@ -88,4 +88,5 @@ if __name__ == '__main__':
     print("Midgame Layer Vector:", np.round(agent.weights['MIDGAME'], 4))
     print("Endgame Layer Vector:", np.round(agent.weights['ENDGAME'], 4))
 
-    plt.show()
+    plt.savefig("training_performance.png", dpi=300, bbox_inches='tight')
+    print("Performance plot successfully exported as 'training_performance.png'!")
