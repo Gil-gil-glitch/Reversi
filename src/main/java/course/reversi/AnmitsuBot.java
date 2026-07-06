@@ -151,20 +151,10 @@ public class AnmitsuBot extends SimpleBot {
 
     private void setDefaultWeights() {
 
-        // Opening Layer Vector:
-        // [ 0.0934  0.3409  0.0048 -0.0383 -0.0345 -0.2866 -0.0239 -0.1037  0.2126
-        // -0.0176]
-        //Midgame Layer Vector:
-        // [ 0.0527  0.5433 -0.1128 -0.1304  0.0832 -0.0405 -0.1147  0.0445  0.365
-        //  0.0156]
-        //Endgame Layer Vector:
-        // [ 0.3201  0.3722  0.1433  0.0428  0.4225 -0.4183 -0.3915  0.2548  0.047
-        //  0.086 ]
-        //
         // Adjust these weights when training is complete
-        this.openingWeights = new double[]{0.0934,  0.3409,  0.0048, -0.0383, -0.0345, -0.2866, -0.0239, -0.1037,  0.2126, -0.017};
-        this.midgameWeights = new double[]{0.0934,  0.3409,  0.0048, -0.0383, -0.0345, -0.2866, -0.0239, -0.1037,  0.2126, -0.017};
-        this.endgameWeights = new double[]{0.3201,  0.3722,  0.1433,  0.0428,  0.4225, -0.4183, -0.3915,  0.2548,  0.047, 0.086 };
+        this.openingWeights = new double[]{0.1526,  0.2212,  0.0257,  0.1733, -1.2354, -0.7937, -0.2152, -0.4013,  0.0928, 0.1573};
+        this.midgameWeights = new double[]{-0.0313,  0.249,  -0.0658, -0.0637, -0.1913, -0.5678, -0.385,  -0.2647,  0.1638 , -0.0958};
+        this.endgameWeights = new double[]{0.2332,  0.26,    0.0113,  0.0337, 0.0822, -0.5441, -0.4155, -0.0105,  0.1793, 0.0694 };
     }
 
     public void setAllWeights(double[] opening, double[] midgame, double[] endgame) {
