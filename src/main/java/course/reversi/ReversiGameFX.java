@@ -59,57 +59,60 @@ public class ReversiGameFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        /*
-
-            This method is responsible for displaying the initial menu scene, composing of five nodes:
-
-            -   The Title
-            -   Human vs Human button
-            -   Human vs DumbBot button
-            -   Human vs MapleBot button
-            -   Human vs CastellaBot button
-            -   Human vs MomijiManjuBot button
-            -   Human vs TaiyakiBot button
-            -   Human vs AnmitsuBot button
-            -   Help
-
-         */
         this.primaryStage = primaryStage;
 
-        // layout setup
-        VBox menuRoot = new VBox(10);
+        VBox menuRoot = new VBox(15); // Slightly wider spacing for a cleaner structure
         menuRoot.setAlignment(Pos.CENTER);
 
-        // NODES:
-        Label titleLabel = new Label("Reversi Game");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        Button humanVsHumanButton = new Button("Human vs Human");
-        Button humanVsDumbBotButton = new Button("Human vs DumbBot");
-        Button humanVsMapleBotButton = new Button("Human vs MapleBot");
-        Button humanVsCastellaBotButton = new Button("Human vs. CastellaBot");
-        Button humanVsMomijiManjuBotButton = new Button("Human vs. MomijiManjuBot");
-        Button humanVsTaiyakiBotButton = new Button("Human vs TaiyakiBot");
-        Button humanVsAnmitsuBotButton = new Button("Human vs AnmitsuBot");
+        Label titleLabel = new Label("Reversi Game Arena");
+        titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        Button helpButton = new Button("Help");
+        Label selectLabel = new Label("Choose Your Opponent:");
+        selectLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 500;");
+
+        // Dropdown Selection Box
+        ComboBox<String> modeSelector = new ComboBox<>();
+        modeSelector.getItems().addAll(
+                "Human vs Human",
+                "Human vs DumbBot (Easy)",
+                "Human vs MapleBot (Medium)",
+                "Human vs CastellaBot (Positional Matrix)",
+                "Human vs MomijiManjuBot (Advanced)",
+                "Human vs TaiyakiBot (6-Depth AlphaBeta)",
+                "Human vs AnmitsuBot (Adaptive RL Phase Weighting)"
+        );
+        modeSelector.setValue("Human vs Human"); // Default selection
+        modeSelector.setStyle("-fx-font-size: 14px; -fx-pref-width: 320px;");
+
+        // Main Play Button
+        Button playButton = new Button("Launch Game");
+        playButton.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-pref-width: 180px;");
+
+        playButton.setOnAction(e -> {
+            String selected = modeSelector.getValue();
+            if (selected.contains("DumbBot")) startGame(GameMode.HUMAN_VS_DUMB_BOT);
+            else if (selected.contains("MapleBot")) startGame(GameMode.HUMAN_VS_MAPLE_BOT);
+            else if (selected.contains("CastellaBot")) startGame(GameMode.HUMAN_VS_CASTELLA_BOT);
+            else if (selected.contains("MomijiManjuBot")) startGame(GameMode.HUMAN_VS_MOMIJI_MANJU_BOT);
+            else if (selected.contains("TaiyakiBot")) startGame(GameMode.HUMAN_VS_TAIYAKI_BOT);
+            else if (selected.contains("AnmitsuBot")) startGame(GameMode.HUMAN_VS_ANMITSU_BOT);
+            else startGame(GameMode.HUMAN_VS_HUMAN);
+        });
+
+        // Help Button
+        Button helpButton = new Button("Help & Rules");
+        helpButton.setPrefWidth(120);
         helpButton.setOnAction(e -> showHelp());
 
-        humanVsHumanButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_HUMAN));
-        humanVsDumbBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_DUMB_BOT));
-        humanVsMapleBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_MAPLE_BOT));
-        humanVsCastellaBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_CASTELLA_BOT));
-        humanVsMomijiManjuBotButton.setOnAction(e->startGame(GameMode.HUMAN_VS_MOMIJI_MANJU_BOT));
-        humanVsTaiyakiBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_TAIYAKI_BOT));
-        humanVsAnmitsuBotButton.setOnAction(e -> startGame(GameMode.HUMAN_VS_ANMITSU_BOT));
+        // Assembly
+        menuRoot.getChildren().addAll(titleLabel, selectLabel, modeSelector, playButton, helpButton);
 
-        menuRoot.getChildren().addAll(titleLabel, humanVsHumanButton, humanVsDumbBotButton, humanVsMapleBotButton, humanVsCastellaBotButton, humanVsMomijiManjuBotButton, humanVsTaiyakiBotButton, humanVsAnmitsuBotButton, helpButton);
-
-        //background color
+        // Background fill setup
         Color shogiWood = Color.rgb(222, 184, 135);
         menuRoot.setBackground(Background.fill(shogiWood));
 
-        //stage setup
+        // Stage deployment
         Scene menuScene = new Scene(menuRoot, 600, 400);
         primaryStage.setTitle("Reversi Game");
         primaryStage.setScene(menuScene);
