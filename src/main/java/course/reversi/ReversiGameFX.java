@@ -6,6 +6,7 @@ package course.reversi;
     Difficulty Levels, Custom Strategies, Win/Loss Records, and Graphical Placeholders.
  */
 
+
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -47,18 +48,41 @@ public class ReversiGameFX extends Application {
     private VBox root;
     private Stage primaryStage;
 
+    // --- REUSABLE UI STYLE SHEET CONSTANTS ---
+    private static final String APP_BACKGROUND = "-fx-background-color: #2c3e50;"; // Rich dark navy
+    private static final String CARD_BACKGROUND = "-fx-background-color: #ffffff; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 4);";
+
+    private static final String TEXT_PRIMARY = "-fx-text-fill: #ecf0f1; -fx-font-family: 'Segoe UI', Helvetica, sans-serif;";
+    private static final String TEXT_DARK = "-fx-text-fill: #2c3e50; -fx-font-family: 'Segoe UI', Helvetica, sans-serif;";
+
+    private static final String BTN_PRIMARY = "-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-padding: 10 24 10 24; -fx-cursor: hand;";
+    private static final String BTN_SECONDARY = "-fx-background-color: #34495e; -fx-text-fill: #ecf0f1; -fx-background-radius: 6px; -fx-padding: 8 16 8 16; -fx-cursor: hand;";
+    private static final String BTN_DANGER = "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6px; -fx-padding: 8 16 8 16; -fx-cursor: hand;";
+
+    private static final String COMBO_BOX_STYLE = "-fx-background-color: #ffffff; -fx-border-color: #bdc3c7; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 4; -fx-font-size: 14px;";
+
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        VBox menuRoot = new VBox(15);
+        VBox menuRoot = new VBox(25);
         menuRoot.setAlignment(Pos.CENTER);
+        menuRoot.setPadding(new Insets(40));
+        menuRoot.setStyle(APP_BACKGROUND);
 
-        Label titleLabel = new Label("Reversi Game Arena");
-        titleLabel.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        // Core App Title
+        Label titleLabel = new Label("REVERSI ARENA");
+        titleLabel.setStyle(TEXT_PRIMARY + "-fx-font-size: 32px; -fx-font-weight: 900; -fx-letter-spacing: 2px;");
 
-        Label selectLabel = new Label("Choose Your Opponent:");
-        selectLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 500;");
+        // Central Menu Card
+        VBox cardContainer = new VBox(15);
+        cardContainer.setAlignment(Pos.CENTER);
+        cardContainer.setPadding(new Insets(30, 40, 30, 40));
+        cardContainer.setMaxWidth(400);
+        cardContainer.setStyle(CARD_BACKGROUND);
+
+        Label selectLabel = new Label("Select Battle Variant");
+        selectLabel.setStyle(TEXT_DARK + "-fx-font-size: 15px; -fx-font-weight: bold;");
 
         ComboBox<String> modeSelector = new ComboBox<>();
         modeSelector.getItems().addAll(
@@ -71,10 +95,11 @@ public class ReversiGameFX extends Application {
                 "Human vs AnmitsuBot (Adaptive RL Phase Weighting)"
         );
         modeSelector.setValue("Human vs Human");
-        modeSelector.setStyle("-fx-font-size: 14px; -fx-pref-width: 320px;");
+        modeSelector.setStyle(COMBO_BOX_STYLE);
+        modeSelector.setPrefWidth(320);
 
-        Button playButton = new Button("Launch Game");
-        playButton.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-pref-width: 180px;");
+        Button playButton = new Button("LAUNCH MATCH");
+        playButton.setStyle(BTN_PRIMARY + "-fx-font-size: 15px; -fx-pref-width: 200px;");
 
         playButton.setOnAction(e -> {
             String selected = modeSelector.getValue();
@@ -94,120 +119,118 @@ public class ReversiGameFX extends Application {
             }
         });
 
-        Button helpButton = new Button("Help & Rules");
-        helpButton.setPrefWidth(120);
+        cardContainer.getChildren().addAll(selectLabel, modeSelector, playButton);
+
+        Button helpButton = new Button("Game Manual & Rules");
+        helpButton.setStyle(BTN_SECONDARY);
         helpButton.setOnAction(e -> showHelp());
 
-        menuRoot.getChildren().addAll(titleLabel, selectLabel, modeSelector, playButton, helpButton);
+        menuRoot.getChildren().addAll(titleLabel, cardContainer, helpButton);
 
-        Color shogiWood = Color.rgb(222, 184, 135);
-        menuRoot.setBackground(Background.fill(shogiWood));
-
-        Scene menuScene = new Scene(menuRoot, 600, 400);
-        primaryStage.setTitle("Reversi Game");
+        Scene menuScene = new Scene(menuRoot, 600, 450);
+        primaryStage.setTitle("Reversi Game Arena");
+        primaryStage.setResizable(false);
         primaryStage.setScene(menuScene);
         primaryStage.show();
     }
 
-    /**
-     * Spawns a modal profile view stage describing the chosen artificial opponent.
-     */
     private void showBotPreviewStage(GameMode gameMode) {
         Stage previewStage = new Stage();
         previewStage.initModality(Modality.APPLICATION_MODAL);
         previewStage.initOwner(primaryStage);
-        previewStage.setTitle("Opponent Profile Evaluation");
+        previewStage.setTitle("Opponent Blueprint Analysis");
+        previewStage.setResizable(false);
 
-        VBox layout = new VBox(15);
-        layout.setPadding(new Insets(20));
+        VBox layout = new VBox(20);
+        layout.setPadding(new Insets(25));
         layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-background-color: #f5f6fa;");
+        layout.setStyle("-fx-background-color: #f8f9fa;");
 
-        // Profile structural variables
         String name, difficulty, strategy, wins, losses, hexColor;
 
         switch (gameMode) {
             case HUMAN_VS_DUMB_BOT:
                 name = "DumbBot"; difficulty = "★☆☆☆☆ (Easy)";
-                strategy = "Executes pure pseudo-random valid moves without positional analysis.";
-                wins = "12"; losses = "2"; hexColor = "#7f8c8d";
+                strategy = "Executes arbitrary valid moves across the board space without tactical analysis.";
+                wins = "12"; losses = "2"; hexColor = "#95a5a6";
                 break;
             case HUMAN_VS_MAPLE_BOT:
                 name = "MapleBot"; difficulty = "★★☆☆☆ (Normal)";
-                strategy = "Prioritizes immediate raw piece count gains per turn.";
+                strategy = "Implements a basic greedy approach optimized to maximize immediate disc capture.";
                 wins = "8"; losses = "5"; hexColor = "#e67e22";
                 break;
             case HUMAN_VS_CASTELLA_BOT:
                 name = "CastellaBot"; difficulty = "★★★☆☆ (Medium)";
-                strategy = "Utilizes a static heuristic grid weighting evaluation to balance board positions.";
+                strategy = "Utilizes a static position matrix grid weighting evaluation to target edges and corners.";
                 wins = "6"; losses = "9"; hexColor = "#f1c40f";
                 break;
             case HUMAN_VS_MOMIJI_MANJU_BOT:
                 name = "MomijiManjuBot"; difficulty = "★★★☆☆ (Advanced)";
-                strategy = "Mid-range tree lookahead focusing heavily on mobility restriction strategies.";
+                strategy = "Mid-range search tree configuration focused on aggressive opponent mobility restriction.";
                 wins = "3"; losses = "11"; hexColor = "#e74c3c";
                 break;
             case HUMAN_VS_TAIYAKI_BOT:
                 name = "TaiyakiBot"; difficulty = "★★★★☆ (Expert)";
-                strategy = "Deploys a 6-Depth Alpha-Beta Minimax search tree shifting to raw piece sweeps at late game thresholds.";
+                strategy = "Runs an alpha-beta pruned minimax look-ahead tree that transitions to point sweeps during endgame steps.";
                 wins = "1"; losses = "14"; hexColor = "#d35400";
                 break;
             case HUMAN_VS_ANMITSU_BOT:
                 name = "AnmitsuBot"; difficulty = "★★★★★ (Master)";
-                strategy = "Utilizes 10 distinct board feature extractions across specialized Opening, Midgame, and Endgame weight layers.";
-                wins = "0"; losses = "20"; hexColor = "#8e44ad";
+                strategy = "Tracks 10 distinct topological feature properties evaluated across separate opening, mid, and late game layers.";
+                wins = "0"; losses = "20"; hexColor = "#9b59b6";
                 break;
             default:
                 return;
         }
 
-        // Graphical Image Placeholder Profile Box
-        Rectangle imagePlaceholder = new Rectangle(120, 120);
-        imagePlaceholder.setArcWidth(15);
-        imagePlaceholder.setArcHeight(15);
+        // Avatar Module
+        Rectangle imagePlaceholder = new Rectangle(100, 100);
+        imagePlaceholder.setArcWidth(20);
+        imagePlaceholder.setArcHeight(20);
         imagePlaceholder.setFill(Color.web(hexColor));
         Label avatarLabel = new Label(name.substring(0, 2).toUpperCase());
-        avatarLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
+        avatarLabel.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;");
         GridPane imageStack = new GridPane();
         imageStack.setAlignment(Pos.CENTER);
         imageStack.add(imagePlaceholder, 0, 0);
         imageStack.add(avatarLabel, 0, 0);
 
-        // UI text data bindings
         Label titleLabel = new Label(name);
-        titleLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        titleLabel.setStyle(TEXT_DARK + "-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        Label diffLabel = new Label("Difficulty Level: " + difficulty);
-        diffLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #c0392b;");
+        Label diffLabel = new Label("Threat Level: " + difficulty);
+        diffLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #c0392b; -fx-font-size: 14px;");
 
-        Label stratHeader = new Label("Tactical Strategy Profile:");
-        stratHeader.setStyle("-fx-font-weight: bold;");
+        VBox detailsBox = new VBox(5);
+        detailsBox.setAlignment(Pos.CENTER);
+        Label stratHeader = new Label("Tactical Methodology:");
+        stratHeader.setStyle("-fx-font-weight: bold; -fx-text-fill: #7f8c8d;");
         Label stratLabel = new Label(strategy);
         stratLabel.setWrapText(true);
-        stratLabel.setStyle("-fx-alignment: center; -fx-text-alignment: center;");
+        stratLabel.setStyle(TEXT_DARK + "-fx-text-alignment: center; -fx-font-size: 13px;");
+        detailsBox.getChildren().addAll(stratHeader, stratLabel);
 
-        Label recordLabel = new Label(String.format("Historical Analytics Record -> Wins: %s | Losses: %s", wins, losses));
-        recordLabel.setStyle("-fx-font-size: 13px; -fx-font-style: italic; -fx-text-fill: #2980b9;");
+        Label recordLabel = new Label(String.format("Historical Records Card » Wins: %s  |  Losses: %s", wins, losses));
+        recordLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2980b9; -fx-background-color: #e8f4f8; -fx-padding: 6 12 6 12; -fx-background-radius: 4px;");
 
-        // Operational Actions
         HBox actions = new HBox(15);
         actions.setAlignment(Pos.CENTER);
 
-        Button startMatchButton = new Button("Battle Bot");
-        startMatchButton.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20 8 20;");
+        Button startMatchButton = new Button("BATTLE ENGINE");
+        startMatchButton.setStyle(BTN_PRIMARY);
         startMatchButton.setOnAction(e -> {
             previewStage.close();
             startGame(gameMode);
         });
 
-        Button backButton = new Button("Return");
-        backButton.setStyle("-fx-padding: 8 20 8 20;");
+        Button backButton = new Button("CANCEL");
+        backButton.setStyle(BTN_SECONDARY);
         backButton.setOnAction(e -> previewStage.close());
 
         actions.getChildren().addAll(backButton, startMatchButton);
-        layout.getChildren().addAll(imageStack, titleLabel, diffLabel, stratHeader, stratLabel, recordLabel, actions);
+        layout.getChildren().addAll(imageStack, titleLabel, diffLabel, detailsBox, recordLabel, actions);
 
-        Scene scene = new Scene(layout, 420, 480);
+        Scene scene = new Scene(layout, 440, 500);
         previewStage.setScene(scene);
         previewStage.showAndWait();
     }
@@ -220,71 +243,60 @@ public class ReversiGameFX extends Application {
         Reversi.initializeBoard(board);
         currentPlayer = BLACK;
 
-        root = new VBox(10);
+        root = new VBox(20);
         root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(20));
+        root.setStyle(APP_BACKGROUND);
 
+        // Header Metrics Dashboard Panel
+        HBox scorePanel = new HBox(40);
+        scorePanel.setAlignment(Pos.CENTER);
+        scorePanel.setPadding(new Insets(12));
+        scorePanel.setStyle("-fx-background-color: #34495e; -fx-background-radius: 8px;");
+
+        scoreLabel = new Label("Black: 2 | White: 2");
+        scoreLabel.setStyle(TEXT_PRIMARY + "-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        currentPlayerLabel = new Label("Turn: Black (⚫)");
+        currentPlayerLabel.setStyle(TEXT_PRIMARY + "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #f1c40f;");
+
+        scorePanel.getChildren().addAll(scoreLabel, currentPlayerLabel);
+
+        // Board Frame Wrapper
         boardGrid = new GridPane();
         boardGrid.setAlignment(Pos.CENTER);
+        boardGrid.setStyle("-fx-background-color: #1e272e; -fx-padding: 8px; -fx-background-radius: 10px;");
         updateBoard();
 
-        scoreLabel = new Label("Black: 0 | White: 0");
-        scoreLabel.setStyle("-fx-font-size: 16px;");
-
-        currentPlayerLabel = new Label("Current Player: Black");
-        currentPlayerLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-        HBox controls = new HBox(10);
+        HBox controls = new HBox(15);
         controls.setAlignment(Pos.CENTER);
 
-        Button homeButton = new Button("Home");
-        Button resetButton = new Button("Reset Game");
+        Button homeButton = new Button("Main Menu");
+        Button resetButton = new Button("Reset Board");
         Button helpButton = new Button("Help");
+
+        homeButton.setStyle(BTN_SECONDARY);
+        resetButton.setStyle(BTN_DANGER);
+        helpButton.setStyle(BTN_SECONDARY);
 
         homeButton.setOnAction(e -> goToMainMenu());
         resetButton.setOnAction(e -> resetGame());
         helpButton.setOnAction(e -> showHelp());
 
         controls.getChildren().addAll(homeButton, resetButton, helpButton);
-        root.getChildren().addAll(scoreLabel, currentPlayerLabel, boardGrid, controls);
+        root.getChildren().addAll(scorePanel, boardGrid, controls);
 
-        Scene gameScene = new Scene(root, 600, 700);
+        Scene gameScene = new Scene(root, 650, 750);
         primaryStage.setScene(gameScene);
         primaryStage.show();
 
-        if (gameMode == GameMode.HUMAN_VS_DUMB_BOT) {
-            bot = new DumbBot();
-        } else if (gameMode == GameMode.HUMAN_VS_MAPLE_BOT) {
-            bot = new MapleBot();
-        } else if (gameMode == GameMode.HUMAN_VS_CASTELLA_BOT){
-            bot = new CastellaBot();
-        } else if (gameMode == GameMode.HUMAN_VS_MOMIJI_MANJU_BOT) {
-            bot = new MomijiManjuBot();
-        } else if (gameMode == GameMode.HUMAN_VS_TAIYAKI_BOT) {
-            bot = new TaiyakiBot();
-        } else if (gameMode == GameMode.HUMAN_VS_ANMITSU_BOT){
-            bot = new AnmitsuBot();
-        } else {
-            bot = null;
-        }
-    }
-
-    private void showHelp() {
-        String helpMessage = "REVERSI GAME HELP:\n\n" +
-                "1. ||Human v. Human||: Two human players take turns placing their pieces (⚫ or ⚪) on the board.\n" +
-                "2. ||Human v. DumbBot||: A human player competes against a bot that makes random moves (EASY).\n" +
-                "3. ||Human v. MapleBot||: A human player competes against with a basic strategy (MEDIUM).\n" +
-                "4. ||Human v. CastellaBot||: A human player competes against with a smart strategy (Medium Difficulty.\n\n" +
-                "GAMEPLAY RULES:\n" +
-                "- The objective is to have the most pieces of your color on the board at the end of the game.\n" +
-                "- Players take turns placing their pieces on the board, flipping opponent's pieces.\n" +
-                "- A valid move must surround one or more of the opponent's pieces with the player's own pieces.\n" +
-                "If you never played Reversi before, please check this video out:\n https://www.youtube.com/watch?v=4XdyAZhzJW8";
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Help");
-        alert.setHeaderText("How to Play Reversi");
-        alert.setContentText(helpMessage);
-        alert.showAndWait();
+        if (gameMode == GameMode.HUMAN_VS_DUMB_BOT) bot = new DumbBot();
+        else if (gameMode == GameMode.HUMAN_VS_MAPLE_BOT) bot = new MapleBot();
+        else if (gameMode == GameMode.HUMAN_VS_CASTELLA_BOT) bot = new CastellaBot();
+        else if (gameMode == GameMode.HUMAN_VS_MOMIJI_MANJU_BOT) bot = new MomijiManjuBot();
+        else if (gameMode == GameMode.HUMAN_VS_TAIYAKI_BOT) bot = new TaiyakiBot();
+        else if (gameMode == GameMode.HUMAN_VS_ANMITSU_BOT) bot = new AnmitsuBot();
+        else bot = null;
     }
 
     private void updateBoard() {
@@ -293,10 +305,9 @@ public class ReversiGameFX extends Application {
         if (currentValidMoves.isEmpty()) {
             char opponent = (currentPlayer == BLACK) ? WHITE : BLACK;
             if (Reversi.getValidMoves(board, opponent).isEmpty()) {
-                javafx.application.Platform.runLater(() -> showGameOver());
+                javafx.application.Platform.runLater(this::showGameOver);
                 return;
             } else {
-                System.out.println("No moves for " + currentPlayer + ". Skipping turn...");
                 switchPlayer();
                 return;
             }
@@ -309,25 +320,28 @@ public class ReversiGameFX extends Application {
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE);
-                cell.setFill(Color.SPRINGGREEN);
-                cell.setStroke(Color.BLACK);
+
+                // Matte Dark Green felt design pattern
+                cell.setFill(Color.web("#27ae60"));
+                cell.setStroke(Color.web("#1e272e"));
+                cell.setStrokeWidth(1.5);
 
                 if (board[row][col] == BLACK || board[row][col] == WHITE) {
-                    cell.setFill(createPieceFill(Color.SPRINGGREEN, board[row][col] == BLACK ? Color.BLACK : Color.WHITE));
+                    cell.setFill(createPieceFill(Color.web("#27ae60"), board[row][col] == BLACK ? Color.web("#2c3e50") : Color.web("#f5f6fa")));
                 }
 
                 String move = String.format("%c%d", 'A' + row, col + 1);
                 if (!isBotTurn && Reversi.getValidMoves(board, currentPlayer).contains(move)) {
-                    cell.setFill(createPieceFill(Color.SPRINGGREEN, Color.PALEVIOLETRED));
+                    // Soft translucent highlight color for hint layers
+                    cell.setFill(createPieceFill(Color.web("#27ae60"), Color.web("rgba(231, 76, 60, 0.45)")));
                 }
 
                 final int r = row, c = col;
                 cell.setOnMouseClicked(e -> {
-                    if (!isBotTurn) {
-                        if (Reversi.isValidMove(board, r, c, currentPlayer)) {
-                            Reversi.makeMove(board, r, c, currentPlayer);
-                            switchPlayer();
-                        }
+                    if (!isBotTurn && Reversi.isValidMove(board, r, c, currentPlayer)) {
+                        Reversi.makeMove(board, r, c, currentPlayer);
+                        updateScores();
+                        switchPlayer();
                     }
                 });
 
@@ -342,18 +356,19 @@ public class ReversiGameFX extends Application {
 
     private RadialGradient createPieceFill(Color baseColor, Color pieceColor) {
         return new RadialGradient(
-                0, 0.1, 0.5, 0.5, 0.9, true,
+                0, 0.1, 0.5, 0.5, 0.85, true,
                 javafx.scene.paint.CycleMethod.NO_CYCLE,
                 new Stop(0, pieceColor),
-                new Stop(0.4, pieceColor),
-                new Stop(0.5, baseColor),
+                new Stop(0.5, pieceColor),
+                new Stop(0.55, pieceColor.darker()), // Smooth outer rim shading illusion
+                new Stop(0.62, baseColor),
                 new Stop(1, baseColor)
         );
     }
 
     private void switchPlayer() {
         currentPlayer = (currentPlayer == BLACK) ? WHITE : BLACK;
-        currentPlayerLabel.setText("Current Player: " + (currentPlayer == BLACK ? "Black" : "White"));
+        currentPlayerLabel.setText("Turn: " + (currentPlayer == BLACK ? "Black (⚫)" : "White (⚪)"));
         updateBoard();
     }
 
@@ -369,13 +384,11 @@ public class ReversiGameFX extends Application {
     }
 
     private void resetGame() {
-        System.out.println("Resetting game...");
         Reversi.initializeBoard(board);
         currentPlayer = BLACK;
-        updateBoard();
         updateScores();
-        currentPlayerLabel.setText("Current Player: Black");
-        System.out.println("Game reset successfully.");
+        currentPlayerLabel.setText("Turn: Black (⚫)");
+        updateBoard();
     }
 
     private void showGameOver() {
@@ -387,34 +400,21 @@ public class ReversiGameFX extends Application {
             }
         }
 
-        String winner = (blackCount > whiteCount) ? "Black (⚫) wins!" : (whiteCount > blackCount) ? "White (⚪) wins!" : "It's a tie!";
-        String modeText = (bot == null) ? "Human vs Human" :
-                (bot instanceof DumbBot) ? "Human vs DumbBot" :
-                        (bot instanceof MapleBot) ? "Human vs MapleBot" :
-                                (bot instanceof CastellaBot) ? "Human vs CastellaBot":
-                                        (bot instanceof MomijiManjuBot) ? "Human vs MomijiManjuBot":
-                                                (bot instanceof TaiyakiBot) ? "Human vs TaiyakiBot" : "Human vs AnmitsuBot";
-
-        String playerBlack = "Human";
-        String playerWhite = (bot == null) ? "Human2" : bot.getClass().getSimpleName();
-
-        Reversi.saveMovesToFile(modeText, playerBlack, playerWhite);
+        String winner = (blackCount > whiteCount) ? "Black Wins!" : (whiteCount > blackCount) ? "White Wins!" : "Draw Match!";
+        String modeText = (bot == null) ? "Human vs Human" : "vs " + bot.getClass().getSimpleName();
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Over");
-        alert.setHeaderText("Game Over - " + modeText);
-        alert.setContentText("Final Score:\nBlack: " + blackCount + " | White: " + whiteCount + "\n\n" + winner);
+        alert.setTitle("Tournament Results");
+        alert.setHeaderText(winner);
+        alert.setContentText(String.format("Mode: %s\n\nFinal Score Matrix:\nBlack Discs: %d\nWhite Discs: %d", modeText, blackCount, whiteCount));
 
-        ButtonType restart = new ButtonType("Restart");
-        ButtonType menu = new ButtonType("Main Menu");
+        ButtonType restart = new ButtonType("Play Again");
+        ButtonType menu = new ButtonType("Exit to Menu");
         alert.getButtonTypes().setAll(restart, menu);
 
         alert.showAndWait().ifPresent(response -> {
-            if (response == restart) {
-                resetGame();
-            } else if (response == menu) {
-                goToMainMenu();
-            }
+            if (response == restart) resetGame();
+            else if (response == menu) goToMainMenu();
         });
     }
 
@@ -422,23 +422,17 @@ public class ReversiGameFX extends Application {
         if (bot == null) return;
 
         Alert thinkingDialog = new Alert(Alert.AlertType.INFORMATION);
-        thinkingDialog.setTitle("Bot Thinking...");
+        thinkingDialog.setTitle("Engine Processing");
         thinkingDialog.setHeaderText(null);
-        thinkingDialog.setContentText("The bot is thinking...");
+        thinkingDialog.setContentText("Calculating tactical branches...");
 
         ProgressIndicator progressIndicator = new ProgressIndicator();
         VBox dialogContent = new VBox(progressIndicator);
         dialogContent.setAlignment(Pos.CENTER);
         thinkingDialog.getDialogPane().setContent(dialogContent);
-
         thinkingDialog.show();
-        List<String> validMoves = Reversi.getValidMoves(board, WHITE);
-        if (validMoves.isEmpty()) {
-            switchPlayer();
-            return;
-        }
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.2)); // Snappier delay loop
         pause.setOnFinished(event -> {
             thinkingDialog.close();
             int[] botMove = bot.getBotMove(board, WHITE);
@@ -449,6 +443,20 @@ public class ReversiGameFX extends Application {
             }
         });
         pause.play();
+    }
+
+    private void showHelp() {
+        String helpMessage = "REVERSI RULES & CONTROLS:\n\n" +
+                "• Capture strategy relies on trapping opponent discs between your pieces on straight linear paths.\n" +
+                "• Trapped opponent elements flip over immediately to matches your current active profile color.\n" +
+                "• Target high-value coordinates like corners to anchor structural pieces safely.\n\n" +
+                "New to Reversi? Watch this video tutorial online:\nhttps://www.youtube.com/watch?v=4XdyAZhzJW8";
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Rule Book");
+        alert.setHeaderText("How to Play Reversi");
+        alert.setContentText(helpMessage);
+        alert.showAndWait();
     }
 
     private enum GameMode {
