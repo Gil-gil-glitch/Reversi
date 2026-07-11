@@ -121,7 +121,10 @@ public class ReversiGameFX extends Application {
         // Classic Mode Interface Switch Option
         CheckBox classicToggle = new CheckBox("Classic Mode");
         classicToggle.setSelected(isClassicMode);
-        classicToggle.setStyle(isClassicMode ? "-fx-text-fill: #2c3e50; -fx-font-weight: bold;" : "-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        if (isClassicMode) {
+            classicToggle.setStyle("-fx-text-fill: #2c3e50; -fx-font-weight: bold; -fx-font-size: 14px;");
+        }
+
         classicToggle.setOnAction(e -> {
             isClassicMode = classicToggle.isSelected();
             goToMainMenu(); // Re-trigger application draw sequence to clear styles cleanly
