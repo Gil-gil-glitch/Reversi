@@ -4,7 +4,7 @@ Hello!
 
 This project, **Reversi** (also known as Othello), is a robust implementation of the classic 8x8 board game developed in Java. It is a continuation of my work from a previous programming course and now serves as a platform to integrate and test various Artificial Intelligence strategies.
 <p align="center">
-  <img src="images/reversi-board-1.png" width="500">
+  <img src="images/reversi-board-2.png" width="500">
 </p>
 ---
 
@@ -15,23 +15,67 @@ Reversi currently supports the following modes:
 * **Human vs. Human:** Classic two-player mode.
 * **Human vs. Bot:** Play against one of several AI opponents, each with a unique personality and strategic depth.
 
+This implementation also composes of two board designs:
+
+* **Classic Mode:** The original layout developed for my final project in the Programming Language class.
+<p align="center">
+  <img src="images/reversi-board-1.png" width="500">
+</p>
+
+* **Default Mode:** The revised layout
+<p align="center">
+  <img src="images/reversi-board-2.png" width="500">
+</p>
+
+**Note:**  To toggle between board designs, please click the checkbox in the home menu.
+
 ---
 
 ## The Bots: AI Personalities
 
-The 'Human vs Bot' mode features four distinct opponents. Their difficulty ranges from purely random play to an advanced minimax search agent.
+The 'Human vs Bot' mode features seven distinct opponents. Their difficulty ranges from purely random play to adaptive reinforcement learning models.
 
-| Bot Name | Strategy / Description                                                                                                                                                            | Difficulty | Key AI Technique |
-| :--- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------| :--- |
-| **DumbBot** | A basic strategic bot. It **prioritizes corner positions** (A1, A8, H1, H8) due to their high value. If no corner is available, it makes a random move.                           | Easy       | Corner Prioritization  |
-| **MapleBot** | A more refined strategic bot. It chooses the move that results in the **highest combined score** of flipped pieces and a static **positional weight** for the newly placed piece. | Medium     | Static Evaluation Function |
-| **CastellaBot** | The second most challenging opponent. It uses an advanced **game-tree search algorithm** to look several moves ahead.                                                             | Hard       | Minimax with Alpha-Beta Pruning |
-| **MomijiManjuBot** |  The most challenging opponent. It evaluates moves using a **learned value function**, trained via **temporal-difference reinforcement learning** over multiple board features. | Difficult | Temporal-Difference Reinforcement Learning |
+| Bot Name           | Strategy / Description                                                                                                                                                                                    | Difficulty | Key AI Technique |
+|:-------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------| :--- |
+| **DumbBot**        | A basic strategic bot. It **prioritizes corner positions** (A1, A8, H1, H8) due to their high value. If no corner is available, it makes a random move.                                                   | Easy       | Corner Prioritization  |
+| **MapleBot**       | A more refined strategic bot. It chooses the move that results in the **highest combined score** of flipped pieces and a static **positional weight** for the newly placed piece.                         | Medium     | Static Evaluation Function |
+| **CastellaBot**    | A challenging opponent. It uses an advanced **game-tree search algorithm** to look several moves ahead.                                                                                                   | Hard       | Minimax with Alpha-Beta Pruning |
+| **MomijiManjuBot** | A difficult opponent. It evaluates moves using a **learned value function**, trained via **temporal-difference reinforcement learning** over multiple board features.                                     | Difficult | Temporal-Difference Reinforcement Learning |
+| **TaiyakiBot**     | A highly competitive expert agent - currently, the most difficult bot. It utilizes deep game-tree search paired with endgame transition strategies.                                                       | Expert     | 6-Depth Alpha-Beta Minimax Tree |
+| **AnmitsuBot**     | The ultimate master tier engine - (this bot needs to be debugged, so current difficulty may not be peak). Features dynamically weighted topological feature layers that change as the match state shifts. | Master     | Adaptive RL Phase Weighting |
 
 ---
+## Master Reinforcement Learning Engine: AnmitsuBot Explained
+
+The **AnmitsuBot** represents the peak strategic tier of the system. While MomijiManjuBot utilizes standard temporal-difference learning across a monolithic model, AnmitsuBot breaks the game down into fluid evolutionary phases.
+
+### 1. Multi-Layer Phase Weighting
+Rather than relying on one static set of weights throughout the match, AnmitsuBot dynamically shifts its focus across **Opening, Midgame, and Endgame weight layers**. This simulates human grandmaster behaviors by prioritizing mobility and structural safety early on, while pivoting flawlessly to aggressive board sweeping during the closing moves.
+
+### 2. 10-Feature Topological Extraction
+AnmitsuBot evaluates positions by tracking 10 distinct architectural board features simultaneously, including:
+* Dynamic frontier parity matrixing.
+* Positional vulnerability scores (X- and C-square hazards).
+* Stable/Un-flippable disc identification.
+* Predictive opponent mobility starvation metrics.
+
+---
+
+## Expert GameTree-Search Agent: TaiyakiBot Explained
+
+The **TaiyakiBot** expands significantly on the fundamental tree search techniques used by CastellaBot to form a highly optimized, deep-thinking tactical engine.
+
+### 1. Extended Lookahead Horizon
+While CastellaBot operates at a basic horizon of 3 steps, TaiyakiBot runs a deep **6-Depth Alpha-Beta Pruning Minimax search tree** ($SEARCH\_DEPTH = 6$). This allows it to evaluate permutations deep into future exchanges, preventing trap setups and securing long-term territory anchors.
+
+### 2. Endgame Point Sweeps
+When the game crosses a critical empty-tile threshold, TaiyakiBot dynamically updates its weighted evaluation score function. It instantly transitions from positional tracking over matrix coordinates to a high-density raw piece sweep strategy, securing decisive late-game victories.
+
+---
+
 ## Reinforcement Learning Agent: MomijiManjuBot Explained
 
-The **MomijiManjuBot** is the most advanced opponent in the system. Instead of relying on a fixed search depth or hand-tuned heuristics, it uses a **reinforcement learning approach** to learn how to evaluate board positions from experience.
+The **MomijiManjuBot** is an advanced learning opponent in the system. Instead of relying on a fixed search depth or hand-tuned heuristics, it uses a **reinforcement learning approach** to learn how to evaluate board positions from experience.
 
 ### 1. Value-Based Reinforcement Learning (TD Learning)
 
@@ -41,10 +85,9 @@ MomijiManjuBot models the game as a sequence of states and learns a **state-valu
   <img src="images/state-value_function-removebg.png" width="500">
 </p>
 
-
 where:
-- \($f_i(S)$)are hand-designed features extracted from the board state
-- \( $w_i$) \) are learned weights
+- $f_i(S)$ are hand-designed features extracted from the board state
+- $w_i$ are learned weights
 
 The bot is trained using **Temporal-Difference (TD(0)) learning**, where weights are updated based on the difference between the predicted value of a state and a target value derived from future outcomes.
 
@@ -66,7 +109,7 @@ After a game ends, the bot updates its weights by backing up this final reward t
   <img src="images/update-weight-with-final-reward-removebg.png" width="500">
 </p>
 
-where $\mathbf{\alpha}$ is the learning rate.  
+where $\alpha$ is the learning rate.  
 This allows the bot to gradually learn which board features contribute to winning outcomes.
 
 ---
@@ -111,7 +154,7 @@ Unlike CastellaBot, **MomijiManjuBot does not perform deep game-tree search**. I
 
 ## GameTree-Search Algorithm: CastellaBot Explained
 
-The **CastellaBot** uses core game AI techniques to determine the best move, serving as the strongest opponent in the current version.
+The **CastellaBot** uses core game AI techniques to determine the best move, serving as a reliable structural benchmark opponent.
 
 ### 1. Minimax Search with Alpha-Beta Pruning
 
@@ -204,9 +247,9 @@ You will need the following software installed on your system:
 
 ### Option 3: Using the JAR file
 
-1. Clone this repository 
+1. Clone this repository
     ```bash
-    git clone https://github.com/Gil-gil-glitch/Reversi.git
+    git clone [https://github.com/Gil-gil-glitch/Reversi.git](https://github.com/Gil-gil-glitch/Reversi.git)
     ```
 2. Navigate to the output folder and download the jar file
 3. Right-click on the jar file and it should run
