@@ -251,8 +251,21 @@ You will need the following software installed on your system:
     ```bash
     git clone [https://github.com/Gil-gil-glitch/Reversi.git](https://github.com/Gil-gil-glitch/Reversi.git)
     ```
-2. Navigate to the output folder and download the jar file
-3. Right-click on the jar file and it should run
+2. Navigate to the artifacts output directory containing Reversi.jar.
+
+3. Because modern systems lack embedded JavaFX runtimes, launch the game via a terminal using an explicit Java environment path:
+
+Windows (PowerShell):
+
+```bash
+   & "C:\Program Files\JetBrains\IntelliJ IDEA 2026.1.4\jbr\bin\java.exe" -jar Reversi.jar
+```
+
+macOS/Linux
+
+```bash
+  java -jar Reversi.jar
+```
 
 ## Future Plans (AI Integration)
 
