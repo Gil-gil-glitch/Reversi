@@ -2,7 +2,8 @@
 
 Hello!
 
-This project, **Reversi** (also known as Othello), is a robust implementation of the classic 8x8 board game developed in Java. It is a continuation of my work from a previous programming course and now serves as a platform to integrate and test various Artificial Intelligence strategies.
+This project, **Reversi** (also known as Othello), is a robust implementation of the classic 8x8 board game developed in Java. It is a continuation of my work from a previous programming course and now serves as a platform to integrate and test various Artificial Intelligence strategies. 
+As of writing this (2026/7/18), this project is currently being discontinued to focus on other future projects. However, if you have any suggestions or issues, please write an issue! Thank you
 <p align="center">
   <img src="images/reversi-board-2.png" width="500">
 </p>
